@@ -8,14 +8,35 @@ Fall 2014
 #include <string.h>
 #include <windows.h>
 #include <conio.h>
+
 typedef struct{
     char first_name[16],last_name[16],city[16];
     char phone_number[16],street_address[32];
 }USER;
 int Num_Entries=0,len_Entries=0;
-USER *Entries;
+USER* Entries;
+
+void Phone();
+void add(USER*);
+void del_Entrys();
+void deleteAll();
+void Search();
+void Modify();
+void Shifter_Right(int, int);
+void Shifter_left(int, int);
+void set_User(USER*);
+void Dynamic_Allocation();
+int Finder(char*, char*);
+int place_finder(USER);
+void print_user(USER);
+void printall();
+void Save();
+void Load();
+void readString(char*);
+void readNum(char*);
+
 int main(){
-    system("COLOR 0F");
+    system("COLOR 1E");
     Phone();
     return 0;
 }
@@ -50,7 +71,7 @@ void Phone(){
             case '7': Save(); break;
             case '8': deleteAll(); break;
             case '9': exit(0); break;
-            default : printf("\nWrong Command!\n"); system("PAUSE");
+            default : printf("\n\tWrong Command!\n"); system("PAUSE");
         }
     }
 }
@@ -70,34 +91,28 @@ void del_Entrys(){
     fflush(stdin);
     char last_name[16],first_name[16];
     printf("Enter Last Name:\n");
-    gets(last_name);
+    readString(last_name);
     printf("Enter First Name:\n");
-    gets(first_name);
+    readString(first_name);
     int index = Finder(last_name, first_name);
-    if (index == -1){
-        printf("CONTACT NOT FOUND !!!\n");
-        system("PAUSE");
-        return;
-    }else{
-        int i= index;
+    if (index == -1){printf("CONTACT NOT FOUND !!!\n"); system("PAUSE"); return;}
+    else{
+        int i = index;
         int Choose;
-        while(!strcmp(Entries[index].last_name,last_name) && !strcmp(Entries[index].first_name,first_name)&& index< Num_Entries){
+        while(!strcmp(Entries[index].last_name,last_name) && !strcmp(Entries[index].first_name,first_name) && index < Num_Entries){
             printf("Contact #%d\n",index+1);
             print_user(Entries[index]);
             index++;
         }
         printf("Which contact do you want to delete? \nIf you don't want to delete enter '0'.\n");
-        scanf("%d",&Choose);
-        Choose-=1;
-        if(Choose==-1) return;
-        while(Choose< 0  || Choose > index-1 ||  Choose < i){
-            printf("Wrong Input:\n");
+        do{
             fflush(stdin);
             scanf("%d",&Choose);
-            fflush(stdin);
-            Choose-=1;
-            if(Choose==-1) return;
-        }
+            Choose -= 1;
+            if(Choose == -1) return;
+            if(Choose < 0 || Choose > index-1 || Choose < i)
+                printf("Wrong input.\n");
+        }while(Choose < 0 || Choose > index-1 || Choose < i);
         Shifter_left(Choose,Num_Entries);
         Num_Entries--;
         printf("\nContact deleted.\n");
@@ -105,7 +120,7 @@ void del_Entrys(){
     }
 }
 void deleteAll(){
-    Num_Entries=0,len_Entries=0;
+    Num_Entries = 0,len_Entries = 0;
     Entries = NULL;
     printf("All Contacts deleted.\n");
     system("PAUSE");
@@ -128,34 +143,28 @@ void Modify(){
     fflush(stdin);
     char last_name[16],first_name[16];
     printf("Enter Last Name:\n");
-    gets(last_name);
+    readString(last_name);
     printf("Enter First Name:\n");
-    gets(first_name);
+    readString(first_name);
     int index = Finder(last_name,first_name);
-    if (index==-1){
-        printf("CONTACT NOT FOUND !!!\n");
-        system("PAUSE");
-        return;
-    }else{
-        int i= index;
+    if (index == -1){printf("CONTACT NOT FOUND !!!\n"); system("PAUSE"); return;}
+    else{
+        int i = index;
         int Choose;
-        while(!strcmp(Entries[index].last_name,last_name) && !strcmp(Entries[index].first_name,first_name)&& index<Num_Entries){
+        while(!strcmp(Entries[index].last_name,last_name) && !strcmp(Entries[index].first_name,first_name) && index < Num_Entries){
             printf("Contact #%d\n",index+1);
             print_user(Entries[index]);
             index++;
         }
         printf("Which contact do you want to Modify? \nIf you don't want to modify enter '0'.\n");
-        scanf("%d",&Choose);
-        Choose-=1;
-        if(Choose==-1) return;
-        while(Choose< 0  || Choose > index-1 ||  Choose < i){
-            printf("Wrong Input:\n");
+        do{
             fflush(stdin);
             scanf("%d",&Choose);
-            fflush(stdin);
-            Choose-=1;
-            if(Choose==-1) return;
-        }
+            Choose -= 1;
+            if(Choose == -1) return;
+            if(Choose < 0 || Choose > index-1 || Choose < i)
+                printf("Wrong input.\n");
+        }while(Choose < 0 || Choose > index-1 || Choose < i);
         USER m;
         set_User(&m);
         Shifter_left(Choose,Num_Entries);
@@ -166,46 +175,41 @@ void Modify(){
 void Shifter_Right(int index,int num_element){
     int i;
     if (index < num_element-1)
-        for (i = 1; i < num_element-index; i++ ){
+        for (i=1; i<num_element-index; i++ ){
             Entries[num_element-i] = Entries[num_element-1-i];}
 }
 void Shifter_left(int index,int num_element){
     int i;
-    for (i = index; i <= num_element-2; i++ ){
+    for (i=index; i<=num_element-2; i++ ){
            Entries[i] = Entries[i+1];}
 }
 void set_User(USER *user){
     fflush(stdin);
     printf("ENTER FIRST NAME:\n");
-    gets(user->first_name);
-    validString(user->first_name);
+    readString(user->first_name);
     printf("ENTER LAST NAME:\n");
-    gets(user->last_name);
-    validString(user->last_name);
+    readString(user->last_name);
     printf("ENTER PHONE NUMBER:\n");
-    gets(user->phone_number);
-    ValidNum(user->phone_number);
+    readNum(user->phone_number);
     printf("ENTER STREET ADDRESS:\n");
-    gets(user->street_address);
-    validString(user->street_address);
+    readString(user->street_address);
     printf("ENTER CITY:\n");
-    gets((user->city));
-    validString(user->city);
+    readString(user->city);
 }
 void Dynamic_Allocation(){
-    if (Num_Entries == 1){
+    if(Num_Entries == 1){
         Entries = (USER*) malloc(2*sizeof(USER));
         len_Entries = 2;
-    }else if (Num_Entries >= len_Entries - 2){
-        USER * E = malloc(2*(len_Entries)*sizeof(USER));
-        if (E!= NULL){
+    }else if(Num_Entries >= len_Entries - 2){
+        USER* E = malloc(2*(len_Entries)*sizeof(USER));
+        if (E != NULL){
             int i;
-            for (i=0;i<Num_Entries;i++){
-                E[i]=Entries[i];
+            for(i=0; i<Num_Entries; i++){
+                E[i] = Entries[i];
             }
             free(Entries);
             Entries = E;
-            len_Entries=(len_Entries)*2;
+            len_Entries = 2*(len_Entries);
         }else {
             printf("MEMORY ERROR!!!");
             Num_Entries--;
@@ -217,7 +221,7 @@ int Finder(char* last_name, char* first_name){
     int i;
     if(Num_Entries <= 0) return -1;
     if(first_name == NULL){
-        for(i=0;i<Num_Entries;i++)
+        for(i=0; i<Num_Entries; i++)
             if(!strcmp(Entries[i].last_name, last_name))
                 return i;
     }
@@ -248,19 +252,24 @@ void print_user(USER u){
     printf("Last Name: %s\n",u.last_name);
     printf("City: %s\n",u.city);
     printf("Address: %s\n",u.street_address);
-    printf("Phone Number: +2%s\n\n",u.phone_number);
+    printf("Phone Number: %s\n\n",u.phone_number);
 }
 void printall(){
     int i;
-    for(i=0;i<Num_Entries;i++){printf("Contact #%d\n",i+1);print_user(Entries[i]);}
-    if(i==0) printf("NO CONTACTS!\n");
+    for(i=0; i<Num_Entries; i++){printf("Contact #%d\n",i+1);print_user(Entries[i]);}
+    if(i == 0) printf("NO CONTACTS!\n");
     system("PAUSE");
 }
 void Save(){
-    FILE* F = fopen("Contacts.txt","w");
+    fflush(stdin);
+    char fileName[16];
+    printf("Enter name of file to save to:\n");
+    readString(fileName);
+    strcat(fileName,".txt");
+    FILE* F = fopen(fileName,"w");
     fprintf(F,"%d,%d\n",len_Entries,Num_Entries);
     int i;
-    for(i=0;i < Num_Entries; i++){
+    for(i=0; i<Num_Entries; i++){
         fprintf(F,"%s,",Entries[i].last_name);
         fprintf(F,"%s,",Entries[i].first_name);
         fprintf(F,"%s,",Entries[i].street_address);
@@ -272,14 +281,19 @@ void Save(){
     system("PAUSE");
 }
 void Load(){
-    FILE* F = fopen("Contacts.txt","r");
+    fflush(stdin);
+    char fileName[16];
+    printf("Enter name of file to load from:\n");
+    readString(fileName);
+    strcat(fileName,".txt");
+    FILE* F = fopen(fileName,"r");
     if(F == NULL){printf("File does not exist.\n"); Sleep(750); return;}
     fscanf(F,"%d,%d\n",&(len_Entries),&(Num_Entries));
     if(Num_Entries == 0){printf("Loading unsuccessful.\n"); Sleep(750); return;}
     printf("Loaded successfully.\n"); Sleep(750);
-    Entries=malloc((len_Entries)*sizeof(USER));
+    Entries = malloc((len_Entries)*sizeof(USER));
     int i;
-    for (i=0;i<Num_Entries;i++){
+    for(i=0; i<Num_Entries; i++){
         fscanf(F,"%[^,],",(Entries[i].last_name));
         fscanf(F,"%[^,],",(Entries[i].first_name));
         fscanf(F,"%[^,],",(Entries[i].street_address));
@@ -288,21 +302,38 @@ void Load(){
     }
     fclose(F);
 }
-void validString(char* x){
-        while (strlen(x)<1){
-            printf("Wrong Input, Enter again:\n");
-            gets(x);
+void readString(char* str){
+    fflush(stdin);
+    gets(str);
+    char response;
+    condition:{
+    int i, f1=0, f2=0, n=strlen(str);
+    if(strlen(str)<1) {f1=1;}
+    for(i=0; i<n; i++) {if(str[i]==' '){f1=1;} else {f1=0;}}
+    for(i=0; i<n; i++)
+        if(!((str[i]>='a'&&str[i]<='z') || (str[i]>='A'&&str[i]<='Z') || (str[i]>='0'&&str[i]<='9') || str[i]==' ' || str[i]==',')) f2=1;    
+        while(f1||f2){
+            if(f1){printf("You left this field blank.\n");}
+            if(f2 && !f1){printf("You can only enter (a-z) or (A-Z) or (0-9) or \",\" .\n");}
+            printf("Are you sure you want to continue?(y/n)\n");
+            response = getch();
+            switch(response){
+                case 'Y': case 'y': if(f1){*str=' '; *(str+1)='\0';} return;
+                case 'N': case 'n': printf("Enter again:\n"); gets(str); goto condition; break;
+                default : printf("Please enter only (y/n).\n");
+            }
     }
+  }
 }
-void ValidNum(char* x){
-    int i=-1;
-    validString(x);
-    while(x[++i]!='\0'){
-        if (x[i]<'0' || x[i]>'9'){
-            printf("Please enter numbers only:\n");
-            gets(x);
-            ValidNum(x);
-        }
-    }
-    return ;
+void readNum(char* str){
+    fflush(stdin);
+    int i=0;
+    readString(str);
+    if(!(str[0]==' ' && str[1]=='\0'))
+        for(; str[i]!='\0'; i++)
+            if(str[i]<'0' || str[i]>'9'){
+                printf("Please enter numbers only:\n");
+                readNum(str);
+            }
+    return;
 }
