@@ -40,6 +40,7 @@ int main(){
     Phone();
     return 0;
 }
+
 void Phone(){
     char response;
     while(response != '9'){
@@ -75,6 +76,7 @@ void Phone(){
         }
     }
 }
+
 void add(USER *u){
     Num_Entries++;
     if (u==NULL){
@@ -87,6 +89,7 @@ void add(USER *u){
     Entries[index]=*u;
     system("PAUSE");
 }
+
 void del_Entrys(){
     fflush(stdin);
     char last_name[16],first_name[16];
@@ -119,12 +122,14 @@ void del_Entrys(){
         system("PAUSE");
     }
 }
+
 void deleteAll(){
     Num_Entries = 0,len_Entries = 0;
     Entries = NULL;
     printf("All Contacts deleted.\n");
     system("PAUSE");
 }
+
 void Search(){
     fflush(stdin);
     char last_name[16];
@@ -139,6 +144,7 @@ void Search(){
     }
     system("PAUSE");
 }
+
 void Modify(){
     fflush(stdin);
     char last_name[16],first_name[16];
@@ -172,17 +178,20 @@ void Modify(){
         add(&m);
     }
 }
+
 void Shifter_Right(int index,int num_element){
     int i;
     if (index < num_element-1)
         for (i=1; i<num_element-index; i++ ){
             Entries[num_element-i] = Entries[num_element-1-i];}
 }
+
 void Shifter_left(int index,int num_element){
     int i;
     for (i=index; i<=num_element-2; i++ ){
            Entries[i] = Entries[i+1];}
 }
+
 void set_User(USER *user){
     fflush(stdin);
     printf("ENTER FIRST NAME:\n");
@@ -196,6 +205,7 @@ void set_User(USER *user){
     printf("ENTER CITY:\n");
     readString(user->city);
 }
+
 void Dynamic_Allocation(){
     if(Num_Entries == 1){
         Entries = (USER*) malloc(2*sizeof(USER));
@@ -217,6 +227,7 @@ void Dynamic_Allocation(){
         }
     }
 }
+
 int Finder(char* last_name, char* first_name){
     int i;
     if(Num_Entries <= 0) return -1;
@@ -232,6 +243,7 @@ int Finder(char* last_name, char* first_name){
     }
     return -1;
 }
+
 int place_finder(USER u){
     int i=0;
     if (Num_Entries > 1){
@@ -247,6 +259,7 @@ int place_finder(USER u){
     }
     return i;
 }
+
 void print_user(USER u){
     printf("First Name: %s\n",u.first_name);
     printf("Last Name: %s\n",u.last_name);
@@ -254,12 +267,14 @@ void print_user(USER u){
     printf("Address: %s\n",u.street_address);
     printf("Phone Number: %s\n\n",u.phone_number);
 }
+
 void printall(){
     int i;
     for(i=0; i<Num_Entries; i++){printf("Contact #%d\n",i+1);print_user(Entries[i]);}
     if(i == 0) printf("NO CONTACTS!\n");
     system("PAUSE");
 }
+
 void Save(){
     fflush(stdin);
     char fileName[16];
@@ -280,6 +295,7 @@ void Save(){
     printf("Saved successfully.\n");
     system("PAUSE");
 }
+
 void Load(){
     fflush(stdin);
     char fileName[16];
@@ -302,6 +318,7 @@ void Load(){
     }
     fclose(F);
 }
+
 void readString(char* str){
     fflush(stdin);
     gets(str);
@@ -325,6 +342,7 @@ void readString(char* str){
     }
   }
 }
+
 void readNum(char* str){
     fflush(stdin);
     int i=0;
